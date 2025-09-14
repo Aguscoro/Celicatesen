@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Alfajores Corominas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<header>
+    <div class="barra">
+        <div class="center">
+            <img class="Celi-logo" src="imagenes/Logo.png" alt="logo-Celi">
+        </div>
+        <div class="low-center">
+            <a href="/index.html">
+                <h2>Inicio</h2>
+            </a>
+            <a href="admin.html">
+                <h2>Productos</h2>
+            </a>
+            <a href="https://www.instagram.com/celicatesen_/" target="_blank">
+                    <h2>Instagram</h2>
+            </a>
+        </div>
+    </div>
+</header>
+<body>  
+            <div class="admin-container">
+        <div class="admin-header">
+            <h1>Administración de Productos</h1>
+            <p>Gestiona el catálogo de productos</p>
+        </div>
+        
+        <div class="table-container">
+            <h3>Lista de Productos</h3>
+            <table class="products-table" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Marca</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="form-section">
+            <h3>Agregar Nuevo Producto</h3>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Producto *</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                    <div class="error" id="nombreError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="marca">Marca *</label>
+                    <input type="text" id="marca" name="marca" required>
+                    <div class="error" id="marcaError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="descripcion">Descripción *</label>
+                    <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
+                    <div class="error" id="descripcionError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="precio">Precio *</label>
+                    <input type="number" id="precio" name="precio" step="0.01" min="0" required>
+                    <div class="error" id="precioError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imagen">URL de la Imagen *</label>
+                    <input type="url" id="imagen" name="imagen" required>
+                    <div class="error" id="imagenError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productoId">ID del Producto *</label>
+                    <input type="number" id="productoId" name="productoId" min="1" required>
+                    <div class="error" id="productoIdError"></div>
+                </div>
+                
+                <button type="submit" class="btn">Agregar Producto</button>
+            </form>
+            <div id="formMessage"></div>
+        </div>
+    </div>
+    </div>
+    
+    <script src="admin.js"></script>
+
+    <a class="imagen-wpp" href="https://www.instagram.com/direct/t/17845624232990127/" target="_blank" rel="noopener noreferrer">
+        <img class="logo-wpp" src="imagenes/Instagram.png" alt="logo-wpp">
+    </a>
+</body>
+</html>
