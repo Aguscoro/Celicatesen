@@ -1,0 +1,135 @@
+{
+  "info": {
+    "name": "Celicatesen Backend - Products API",
+    "_postman_id": "c0d8f6b7-0000-4000-8000-000000000000",
+    "description": "Collection to test the Products API (CRUD) with automated tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. GET /products - List all (público)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/products",
+          "host": ["{{BASE_URL}}"],
+          "path": ["products"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Body has ok true and products array', function () { var json = pm.response.json(); pm.expect(json.ok).to.eql(true); pm.expect(json.products).to.be.an('array'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. POST /products - Create product (requiere token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Alfajor Clásico\",\n  \"brand\": \"Corominas\",\n  \"description\": \"Alfajor tradicional con dulce de leche y cobertura de chocolate.\",\n  \"price\": 120,\n  \"imageUrl\": \"http://example.com/img.jpg\",\n  \"stock\": 50,\n  \"category\": \"alfajores\",\n  \"sku\": \"ALF-0001\"\n}"
+        },
+        "url": { "raw": "{{BASE_URL}}/products", "host": ["{{BASE_URL}}"], "path": ["products"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Created (201)', function () { pm.response.to.have.status(201); });",
+              "pm.test('Response has product with _id and sku', function () { var json = pm.response.json(); pm.expect(json.ok).to.eql(true); pm.expect(json.product._id).to.exist; pm.expect(json.product.sku).to.eql('ALF-0001'); pm.environment.set('PRODUCT_ID', json.product._id); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. GET /products/:id - Get product by id (público)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}", "host": ["{{BASE_URL}}"], "path": ["products","{{PRODUCT_ID}}"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 or 404', function () { pm.expect([200,404]).to.include(pm.response.code); });",
+              "pm.test('If found has product object', function () { if (pm.response.code === 200) { var json = pm.response.json(); pm.expect(json.product).to.be.an('object'); pm.expect(json.product._id).to.exist; } });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. PUT /products/:id - Update product (requiere token)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{TOKEN}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"price\": 130,\n  \"stock\": 45,\n  \"description\": \"Descripción actualizada...\"\n}" },
+        "url": { "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}", "host": ["{{BASE_URL}}"], "path": ["products","{{PRODUCT_ID}}"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Updated fields present', function () { var json = pm.response.json(); pm.expect(json.ok).to.eql(true); pm.expect(json.product.price).to.eql(130); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. DELETE /products/:id - Delete product (requiere token)",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+        "url": { "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}", "host": ["{{BASE_URL}}"], "path": ["products","{{PRODUCT_ID}}"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 or 404', function () { pm.expect([200,404]).to.include(pm.response.code); });",
+              "pm.test('If deleted returns ok true', function () { if (pm.response.code === 200) { var json = pm.response.json(); pm.expect(json.ok).to.eql(true); } });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "BASE_URL", "value": "http://localhost:3000/api" },
+    { "key": "TOKEN", "value": "" },
+    { "key": "PRODUCT_ID", "value": "" }
+  ]
+}
