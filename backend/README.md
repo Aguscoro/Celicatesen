@@ -1,45 +1,45 @@
-# Celicatesen Backend
+# Backend de Celicatesen
 
-This is a standalone Node.js + Express backend providing a REST API for a single entity (Product) with full CRUD operations and validations.
+Este es un backend independiente con Node.js + Express que ofrece una API REST para una única entidad (Producto) con operaciones CRUD completas y validaciones.
 
-Features
-- Product model with at least 7 fields and Mongoose validations.
+Características
+- Modelo de Producto con al menos 7 campos y validaciones de Mongoose.
 - Timestamps (`createdAt`, `updatedAt`).
-- JWT-based auth middleware (protects create/update/delete endpoints).
-- Clear error handling and meaningful HTTP status codes.
+- Middleware de autenticación basado en JWT (protege los endpoints de creación/actualización/eliminación).
+- Manejo claro de errores y códigos HTTP significativos.
 
-Quick start
+Inicio rápido
 
-1. Copy `.env.example` to `.env` and set `MONGO_URL` and `SECRET`.
+1. Copia `.env.example` a `.env` y configura `MONGO_URL` y `SECRET`.
 
-2. Install dependencies:
+2. Instala dependencias:
 
 ```powershell
 cd backend
 npm install
 ```
 
-3. Run the server (development):
+3. Ejecuta el servidor (desarrollo):
 
 ```powershell
 npm run dev
 ```
 
-API endpoints
+Endpoints de la API
 
-Base URL: http://localhost:3000/api
+URL base: http://localhost:3000/api
 
-- GET /products — list all products
-- GET /products/:id — get a product by id
-- POST /products — create product (protected — Authorization: Bearer <token>)
-- PUT /products/:id — update product (protected)
-- DELETE /products/:id — delete product (protected)
+- GET /products — listar todos los productos
+- GET /products/:id — obtener un producto por id
+- POST /products — crear producto (protegido — Authorization: Bearer <token>)
+- PUT /products/:id — actualizar producto (protegido)
+- DELETE /products/:id — eliminar producto (protegido)
 
-Example curl (create)
+Ejemplo curl (crear)
 
 ```bash
-curl -X POST http://localhost:3000/api/products \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <token>" \
+curl -X POST http://localhost:3000/api/products \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer <token>" \\
   -d '{"name":"Alfajor","brand":"Corominas","description":"Delicioso alfajor","price":120,"imageUrl":"http://example.com/img.jpg","stock":10,"category":"alfajores","sku":"ALF-001"}'
 ```
