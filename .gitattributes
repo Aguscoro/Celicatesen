@@ -1,0 +1,4 @@
+# Finales de línea uniformes: el repo se edita desde dos computadoras y con
+# herramientas distintas. LF en el índice y en el disco evita que los archivos
+# aparezcan como modificados sin tener cambios de contenido.
+* text=auto eol=lf

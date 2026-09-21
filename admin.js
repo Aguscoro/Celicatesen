@@ -1,207 +1,319 @@
+// Admin panel. Reading the catalogue is public; every change goes out with
+// the admin token, so the panel first has to log in.
 
-const ENDPOINT = 'https://68c60049442c663bd02611a0.mockapi.io/Productos';
+const TOKEN_KEY = 'celicatesen.token';
+
 let productos = [];
 
-// Obtener productos desde MockAPI al cargar la página
-document.addEventListener('DOMContentLoaded', async function() {
-    try {
-        const response = await fetch(ENDPOINT);
-        productos = await response.json();
-        renderizarTabla();
-    } catch (error) {
-        mostrarMensaje('Error al cargar productos desde MockAPI', 'error');
-    }
-});
-
-// Elementos del DOM
+const loginSection = document.getElementById('loginSection');
+const loginForm = document.getElementById('loginForm');
+const loginMessage = document.getElementById('loginMessage');
+const adminSection = document.getElementById('adminSection');
+const logoutButton = document.getElementById('logoutButton');
 const productForm = document.getElementById('productForm');
 const productsTableBody = document.getElementById('productsTableBody');
 const formMessage = document.getElementById('formMessage');
 
-// validar ID único
-function validarId(id) {
-    if (!id || isNaN(id) || parseInt(id) <= 0) {
-        return 'El ID debe ser un número mayor a 0';
-    }
-    
-    // el ID ya existe
-    if (productos.some(p => p.id === parseInt(id))) {
-        return 'El ID ya existe, por favor usa otro';
-    }
-    
-    return '';
+/* Sesión ------------------------------------------------------------------ */
+
+const getToken = () => {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+};
+
+const setToken = (token) => {
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // Storage blocked: the session just won't survive a reload.
+  }
+};
+
+function mostrarPanel(loggedIn) {
+  loginSection.hidden = loggedIn;
+  adminSection.hidden = !loggedIn;
 }
 
-// validar campos
-function validarCampo(valor, campo, minLength = 1) {
-    if (!valor || valor.trim().length < minLength) {
-        return `El campo ${campo} es obligatorio y debe tener al menos ${minLength} caracteres`;
-    }
-    return '';
+function cerrarSesion(motivo) {
+  setToken(null);
+  mostrarPanel(false);
+  if (motivo) mostrarMensajeLogin(motivo);
 }
 
-function validarPrecio(precio) {
-    if (!precio || isNaN(precio) || parseFloat(precio) <= 0) {
-        return 'El precio debe ser un número mayor a 0';
-    }
-    return '';
-}
+/* Mensajes ---------------------------------------------------------------- */
 
-function validarURL(url) {
-    try {
-        new URL(url);
-        return '';
-    } catch {
-        return 'La URL de la imagen no es válida';
-    }
-}
-
-// limpiar mensaje errores
-function limpiarErrores() {
-    const errorElements = document.querySelectorAll('.error');
-    errorElements.forEach(element => {
-        element.textContent = '';
-    });
-}
-
-// mostrar mensaje exito o erorr
 function mostrarMensaje(mensaje, tipo = 'success') {
-    formMessage.innerHTML = `<div class="${tipo}">${mensaje}</div>`;
-    setTimeout(() => {
-        formMessage.innerHTML = '';
-    }, 3000);
+  const caja = document.createElement('div');
+  caja.className = tipo;
+  caja.textContent = mensaje;
+  formMessage.innerHTML = '';
+  formMessage.appendChild(caja);
+  setTimeout(() => {
+    formMessage.innerHTML = '';
+  }, 3000);
 }
 
-// recorrer array y agregar cada fila a la tabla
-function renderizarTabla() {
-    productsTableBody.innerHTML = '';
-    
-    productos.forEach(producto => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <img src="${producto.imagen}" alt="${producto.nombre}" class="product-image" 
-                     onerror="this.src='imagenes/default-product.jpg'">
-            </td>
-            <td>${producto.nombre}</td>
-            <td>${producto.marca}</td>
-            <td>${producto.descripcion}</td>
-            <td>$${producto.precio.toFixed(2)}</td>
-            <td>
-                <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">
-                    Eliminar
-                </button>
-            </td>
-        `;
-        productsTableBody.appendChild(row);
-    });
+function mostrarMensajeLogin(mensaje) {
+  const caja = document.createElement('div');
+  caja.className = 'error';
+  caja.textContent = mensaje;
+  loginMessage.innerHTML = '';
+  loginMessage.appendChild(caja);
 }
 
-// agregar producto
-async function agregarProducto(productoData) {
-    const nuevoProducto = {
-        nombre: productoData.nombre,
-        marca: productoData.marca,
-        descripcion: productoData.descripcion,
-        precio: productoData.precio,
-        imagen: productoData.imagen
-    };
-
-    try {
-        const response = await fetch(ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(nuevoProducto)
-        });
-        const productoCreado = await response.json();
-        productos.push(productoCreado);
-        renderizarTabla();
-        mostrarMensaje('Producto agregado exitosamente');
-    } catch (error) {
-        mostrarMensaje('Error al agregar producto en MockAPI', 'error');
-    }
+function limpiarErrores() {
+  document.querySelectorAll('.error').forEach((element) => {
+    element.textContent = '';
+  });
 }
 
-// eliminar producto
-async function eliminarProducto(id) {
-    if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-        try {
-            await fetch(`${ENDPOINT}/${id}`, { method: 'DELETE' });
-            productos = productos.filter(p => p.id != id);
-            renderizarTabla();
-            mostrarMensaje('Producto eliminado exitosamente');
-        } catch (error) {
-            mostrarMensaje('Error al eliminar producto en MockAPI', 'error');
-        }
-    }
-}
-
-// valida datos ingresados en el formulario
-function validarFormulario(formData) {
-    const errores = {};
-    
-    const errorId = validarId(formData.productoId);
-    if (errorId) errores.productoId = errorId;
-    
-    const errorNombre = validarCampo(formData.nombre, 'nombre', 3);
-    if (errorNombre) errores.nombre = errorNombre;
-    
-    const errorMarca = validarCampo(formData.marca, 'marca', 2);
-    if (errorMarca) errores.marca = errorMarca;
-
-    const errorDescripcion = validarCampo(formData.descripcion, 'descripción', 10);
-    if (errorDescripcion) errores.descripcion = errorDescripcion;
-    
-    const errorPrecio = validarPrecio(formData.precio);
-    if (errorPrecio) errores.precio = errorPrecio;
-
-    const errorImagen = validarURL(formData.imagen);
-    if (errorImagen) errores.imagen = errorImagen;
-    
-    return errores;
-}
-
-//mostrar errores en el formulario
 function mostrarErrores(errores) {
-    Object.keys(errores).forEach(campo => {
-        const errorElement = document.getElementById(`${campo}Error`);
-        if (errorElement) {
-            errorElement.textContent = errores[campo];
-        }
-    });
+  Object.keys(errores).forEach((campo) => {
+    const errorElement = document.getElementById(`${campo}Error`);
+    if (errorElement) errorElement.textContent = errores[campo];
+  });
 }
 
-// Event listener validar todos los campos y si hay eror mostrarlo // agrega producto y resetea el formulario
-productForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    limpiarErrores();
-    
-    const formData = {
-        productoId: document.getElementById('productoId').value.trim(),
-        nombre: document.getElementById('nombre').value.trim(),
-        marca: document.getElementById('marca').value.trim(),
-        descripcion: document.getElementById('descripcion').value.trim(),
-        precio: parseFloat(document.getElementById('precio').value),
-        imagen: document.getElementById('imagen').value.trim()
-    };
-    
-    const errores = validarFormulario(formData);
-    
-    if (Object.keys(errores).length > 0) {
-        mostrarErrores(errores);
-        mostrarMensaje('Por favor, corrige los errores en el formulario', 'error');
-        return;
-    }
-    
-    agregarProducto(formData);
+/* API --------------------------------------------------------------------- */
 
-    productForm.reset();
-});
+// Every authenticated call funnels through here, so an expired token logs the
+// panel out in one place instead of failing differently on each screen.
+async function apiFetch(path, options = {}) {
+  const token = getToken();
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
 
-// Inicializa la tabla al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
+  if (response.status === 401 || response.status === 403) {
+    cerrarSesion('Tu sesión venció. Entrá de nuevo.');
+    throw new Error('unauthorized');
+  }
+
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(body.message || `HTTP ${response.status}`);
+  }
+  return body;
+}
+
+/* Catálogo ---------------------------------------------------------------- */
+
+const formatearPrecio = (precio) =>
+  precio > 0 ? `$${Number(precio).toFixed(2)}` : 'A confirmar';
+
+function renderizarTabla() {
+  productsTableBody.innerHTML = '';
+
+  productos.forEach((producto) => {
+    const row = document.createElement('tr');
+
+    const celdaImagen = document.createElement('td');
+    const imagen = document.createElement('img');
+    imagen.src = producto.imageUrl || 'imagenes/Logo.png';
+    imagen.alt = producto.name;
+    imagen.className = 'product-image';
+    celdaImagen.appendChild(imagen);
+
+    const celdas = [
+      producto.name,
+      producto.brand,
+      producto.description,
+      formatearPrecio(producto.price),
+    ].map((valor) => {
+      const celda = document.createElement('td');
+      celda.textContent = valor;
+      return celda;
+    });
+
+    const celdaAcciones = document.createElement('td');
+    const boton = document.createElement('button');
+    boton.className = 'btn btn-danger';
+    boton.textContent = 'Eliminar';
+    boton.addEventListener('click', () => eliminarProducto(producto._id));
+    celdaAcciones.appendChild(boton);
+
+    row.append(celdaImagen, ...celdas, celdaAcciones);
+    productsTableBody.appendChild(row);
+  });
+}
+
+async function cargarProductos() {
+  try {
+    const body = await apiFetch('/products');
+    productos = body.products;
     renderizarTabla();
+  } catch (error) {
+    if (error.message !== 'unauthorized') {
+      mostrarMensaje('No se pudo cargar el catálogo', 'error');
+    }
+  }
+}
+
+async function agregarProducto(datos) {
+  try {
+    const body = await apiFetch('/products', {
+      method: 'POST',
+      body: JSON.stringify(datos),
+    });
+    productos.push(body.product);
+    renderizarTabla();
+    mostrarMensaje('Producto agregado exitosamente');
+    productForm.reset();
+  } catch (error) {
+    if (error.message !== 'unauthorized') {
+      mostrarMensaje(`No se pudo agregar el producto: ${error.message}`, 'error');
+    }
+  }
+}
+
+async function eliminarProducto(id) {
+  if (!confirm('¿Estás seguro de que querés eliminar este producto?')) return;
+
+  try {
+    await apiFetch(`/products/${id}`, { method: 'DELETE' });
+    productos = productos.filter((producto) => producto._id !== id);
+    renderizarTabla();
+    mostrarMensaje('Producto eliminado exitosamente');
+  } catch (error) {
+    if (error.message !== 'unauthorized') {
+      mostrarMensaje(`No se pudo eliminar el producto: ${error.message}`, 'error');
+    }
+  }
+}
+
+/* Validación -------------------------------------------------------------- */
+
+function validarCampo(valor, campo, minLength = 1) {
+  if (!valor || valor.trim().length < minLength) {
+    return `El campo ${campo} es obligatorio y debe tener al menos ${minLength} caracteres`;
+  }
+  return '';
+}
+
+// The image can be an absolute URL or a path relative to the site, which is
+// what the products seeded from the original gallery use.
+function validarImagen(valor) {
+  if (!valor || !valor.trim()) return 'La imagen es obligatoria';
+  if (valor.startsWith('imagenes/') || valor.startsWith('/')) return '';
+  try {
+    new URL(valor);
+    return '';
+  } catch {
+    return 'Poné una URL válida o una ruta que empiece con imagenes/';
+  }
+}
+
+function validarFormulario(datos) {
+  const errores = {};
+
+  const sku = validarCampo(datos.sku, 'SKU', 3);
+  if (sku) errores.sku = sku;
+  else if (productos.some((producto) => producto.sku === datos.sku)) {
+    errores.sku = 'Ese SKU ya existe, usá otro';
+  }
+
+  const name = validarCampo(datos.name, 'nombre', 3);
+  if (name) errores.name = name;
+
+  const brand = validarCampo(datos.brand, 'marca', 2);
+  if (brand) errores.brand = brand;
+
+  const description = validarCampo(datos.description, 'descripción', 10);
+  if (description) errores.description = description;
+
+  if (Number.isNaN(datos.price) || datos.price < 0) {
+    errores.price = 'El precio no puede ser negativo';
+  }
+
+  if (Number.isNaN(datos.stock) || datos.stock < 0) {
+    errores.stock = 'El stock no puede ser negativo';
+  }
+
+  const category = validarCampo(datos.category, 'categoría', 2);
+  if (category) errores.category = category;
+
+  const imageUrl = validarImagen(datos.imageUrl);
+  if (imageUrl) errores.imageUrl = imageUrl;
+
+  return errores;
+}
+
+/* Eventos ----------------------------------------------------------------- */
+
+loginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  loginMessage.innerHTML = '';
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await fetch(`${API_BASE}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const body = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      mostrarMensajeLogin(body.message || 'No pudimos iniciar sesión');
+      return;
+    }
+    if (!body.user?.isAdmin) {
+      mostrarMensajeLogin('Esa cuenta no administra el catálogo');
+      return;
+    }
+
+    setToken(body.token);
+    loginForm.reset();
+    mostrarPanel(true);
+    cargarProductos();
+  } catch {
+    mostrarMensajeLogin('No pudimos contactar al servidor');
+  }
 });
 
+logoutButton.addEventListener('click', () => cerrarSesion());
 
+productForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  limpiarErrores();
+
+  const datos = {
+    sku: document.getElementById('sku').value.trim(),
+    name: document.getElementById('name').value.trim(),
+    brand: document.getElementById('brand').value.trim(),
+    description: document.getElementById('description').value.trim(),
+    price: parseFloat(document.getElementById('price').value),
+    stock: parseInt(document.getElementById('stock').value, 10),
+    category: document.getElementById('category').value.trim(),
+    imageUrl: document.getElementById('imageUrl').value.trim(),
+  };
+
+  const errores = validarFormulario(datos);
+  if (Object.keys(errores).length) {
+    mostrarErrores(errores);
+    mostrarMensaje('Corregí los errores del formulario', 'error');
+    return;
+  }
+
+  agregarProducto(datos);
+});
+
+/* Arranque ---------------------------------------------------------------- */
+
+if (getToken()) {
+  mostrarPanel(true);
+  cargarProductos();
+} else {
+  mostrarPanel(false);
+}

@@ -1,45 +1,75 @@
-# Backend de Celicatesen
+# API de Celicatesen
 
-Este es un backend independiente con Node.js + Express que ofrece una API REST para una única entidad (Producto) con operaciones CRUD completas y validaciones.
+API REST en Node.js + Express sobre MongoDB, con una entidad (Producto),
+validaciones de Mongoose y autenticación por JWT.
 
-Características
-- Modelo de Producto con al menos 7 campos y validaciones de Mongoose.
+La app vive acá y se sirve de dos maneras: `backend/index.js` la levanta como
+servidor Node para desarrollo, y `api/index.js` la expone como función
+serverless en Vercel. Es el mismo Express en los dos casos.
+
+## Características
+
+- Modelo de Producto con siete campos y validaciones de Mongoose.
 - Timestamps (`createdAt`, `updatedAt`).
-- Middleware de autenticación basado en JWT (protege los endpoints de creación/actualización/eliminación).
-- Manejo claro de errores y códigos HTTP significativos.
+- Lectura pública; creación, edición y borrado sólo para el admin.
+- No hay registro abierto: la cuenta de administrador la crea `npm run seed`.
+- Manejo de errores con códigos HTTP significativos.
 
-Inicio rápido
+## Variables de entorno
 
-1. Copia `.env.example` a `.env` y configura `MONGO_URL` y `SECRET`.
+Se configuran en la raíz del proyecto. Ver `.env.example`.
 
-2. Instala dependencias:
+| Variable | Para qué |
+|---|---|
+| `MONGO_URI` | Conexión a MongoDB. Obligatoria. |
+| `JWT_SECRET` | Firma y verificación de los tokens. Obligatoria, sin valor por defecto. |
+| `PORT` | Puerto del servidor local. Por defecto 3000. |
+| `CORS_ORIGIN` | Orígenes permitidos, separados por coma. Vacío = cualquiera. |
+| `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Sólo los lee `npm run seed`. |
 
-```powershell
-cd backend
+Si falta `MONGO_URI` o `JWT_SECRET`, el proceso no arranca.
+
+## Inicio rápido
+
+```bash
 npm install
-```
-
-3. Ejecuta el servidor (desarrollo):
-
-```powershell
+cp .env.example .env
+npm run seed
 npm run dev
 ```
 
-Endpoints de la API
+`npm run seed` se puede volver a correr: crea el admin si no existe, le
+resetea la contraseña si ya existe, e inserta sólo los productos cuyo SKU
+todavía no esté en la base, así no pisa lo que se haya editado desde el panel.
 
-URL base: http://localhost:3000/api
+## Endpoints
 
-- GET /products — listar todos los productos
-- GET /products/:id — obtener un producto por id
-- POST /products — crear producto (protegido — Authorization: Bearer <token>)
-- PUT /products/:id — actualizar producto (protegido)
-- DELETE /products/:id — eliminar producto (protegido)
+URL base: `http://localhost:3000/api` en local, `/api` en producción.
 
-Ejemplo curl (crear)
+| Método | Ruta | Acceso |
+|---|---|---|
+| `POST` | `/login` | Público |
+| `GET` | `/products` | Público |
+| `GET` | `/products/:id` | Público |
+| `POST` | `/products` | Admin |
+| `PUT` | `/products/:id` | Admin |
+| `DELETE` | `/products/:id` | Admin |
+| `GET` | `/health` | Público |
+
+Los endpoints protegidos esperan `Authorization: Bearer <token>`, con el token
+que devuelve `/login`.
+
+## Ejemplo
 
 ```bash
-curl -X POST http://localhost:3000/api/products \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer <token>" \\
-  -d '{"name":"Alfajor","brand":"Corominas","description":"Delicioso alfajor","price":120,"imageUrl":"http://example.com/img.jpg","stock":10,"category":"alfajores","sku":"ALF-001"}'
+# Login
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@ejemplo.com","password":"..."}'
+
+# Crear un producto
+curl -X POST http://localhost:3000/api/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"name":"Brownie","brand":"Celicatesen","description":"Brownie sin gluten","price":3500,"imageUrl":"imagenes/Brownies.jpg","stock":10,"category":"porciones","sku":"CELI-010"}'
 ```
