@@ -5,12 +5,19 @@ const TOKEN_KEY = 'celicatesen.token';
 
 let productos = [];
 
+// null mientras se carga un producto nuevo; el _id del producto en juego
+// mientras se está editando uno existente.
+let editandoId = null;
+
 const loginSection = document.getElementById('loginSection');
 const loginForm = document.getElementById('loginForm');
 const loginMessage = document.getElementById('loginMessage');
 const adminSection = document.getElementById('adminSection');
 const logoutButton = document.getElementById('logoutButton');
 const productForm = document.getElementById('productForm');
+const formTitle = document.getElementById('formTitle');
+const submitButton = document.getElementById('submitButton');
+const cancelEditButton = document.getElementById('cancelEditButton');
 const productsTableBody = document.getElementById('productsTableBody');
 const formMessage = document.getElementById('formMessage');
 
@@ -135,11 +142,18 @@ function renderizarTabla() {
     });
 
     const celdaAcciones = document.createElement('td');
-    const boton = document.createElement('button');
-    boton.className = 'btn btn-danger';
-    boton.textContent = 'Eliminar';
-    boton.addEventListener('click', () => eliminarProducto(producto._id));
-    celdaAcciones.appendChild(boton);
+
+    const editar = document.createElement('button');
+    editar.className = 'btn';
+    editar.textContent = 'Editar';
+    editar.addEventListener('click', () => empezarEdicion(producto));
+
+    const eliminar = document.createElement('button');
+    eliminar.className = 'btn btn-danger';
+    eliminar.textContent = 'Eliminar';
+    eliminar.addEventListener('click', () => eliminarProducto(producto._id));
+
+    celdaAcciones.append(editar, eliminar);
 
     row.append(celdaImagen, ...celdas, celdaAcciones);
     productsTableBody.appendChild(row);
@@ -175,12 +189,62 @@ async function agregarProducto(datos) {
   }
 }
 
+// Editing reuses the same form: filling it in and remembering which product
+// is in play, so there is one set of fields and one set of validations.
+function empezarEdicion(producto) {
+  editandoId = producto._id;
+
+  document.getElementById('sku').value = producto.sku;
+  document.getElementById('name').value = producto.name;
+  document.getElementById('brand').value = producto.brand;
+  document.getElementById('description').value = producto.description;
+  document.getElementById('price').value = producto.price;
+  document.getElementById('stock').value = producto.stock;
+  document.getElementById('category').value = producto.category;
+  document.getElementById('imageUrl').value = producto.imageUrl || '';
+
+  limpiarErrores();
+  formTitle.textContent = `Editando: ${producto.name}`;
+  submitButton.textContent = 'Guardar cambios';
+  cancelEditButton.hidden = false;
+  formTitle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function cancelarEdicion() {
+  editandoId = null;
+  productForm.reset();
+  limpiarErrores();
+  formTitle.textContent = 'Agregar Nuevo Producto';
+  submitButton.textContent = 'Agregar Producto';
+  cancelEditButton.hidden = true;
+}
+
+async function guardarCambios(datos) {
+  try {
+    const body = await apiFetch(`/products/${editandoId}`, {
+      method: 'PUT',
+      body: JSON.stringify(datos),
+    });
+    productos = productos.map((producto) =>
+      producto._id === body.product._id ? body.product : producto
+    );
+    renderizarTabla();
+    cancelarEdicion();
+    mostrarMensaje('Producto actualizado exitosamente');
+  } catch (error) {
+    if (error.message !== 'unauthorized') {
+      mostrarMensaje(`No se pudo actualizar el producto: ${error.message}`, 'error');
+    }
+  }
+}
+
 async function eliminarProducto(id) {
   if (!confirm('¿Estás seguro de que querés eliminar este producto?')) return;
 
   try {
     await apiFetch(`/products/${id}`, { method: 'DELETE' });
     productos = productos.filter((producto) => producto._id !== id);
+    if (editandoId === id) cancelarEdicion();
     renderizarTabla();
     mostrarMensaje('Producto eliminado exitosamente');
   } catch (error) {
@@ -217,7 +281,11 @@ function validarFormulario(datos) {
 
   const sku = validarCampo(datos.sku, 'SKU', 3);
   if (sku) errores.sku = sku;
-  else if (productos.some((producto) => producto.sku === datos.sku)) {
+  else if (
+    productos.some(
+      (producto) => producto.sku === datos.sku && producto._id !== editandoId
+    )
+  ) {
     errores.sku = 'Ese SKU ya existe, usá otro';
   }
 
@@ -306,8 +374,11 @@ productForm.addEventListener('submit', (event) => {
     return;
   }
 
-  agregarProducto(datos);
+  if (editandoId) guardarCambios(datos);
+  else agregarProducto(datos);
 });
+
+cancelEditButton.addEventListener('click', cancelarEdicion);
 
 /* Arranque ---------------------------------------------------------------- */
 

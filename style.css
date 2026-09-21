@@ -325,3 +325,12 @@ footer {
     font-weight: bold;
     color: #5c3a2e;
 }
+
+/* Acciones del panel ------------------------------------------------------ */
+
+/* Editar y Eliminar conviven en la misma celda, y el formulario suma el
+   botón de cancelar al lado del de guardar. */
+.products-table td .btn + .btn,
+#productForm .btn + .btn {
+    margin-left: 8px;
+}

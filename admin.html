@@ -79,7 +79,7 @@
         </div>
 
         <div class="form-section">
-            <h3>Agregar Nuevo Producto</h3>
+            <h3 id="formTitle">Agregar Nuevo Producto</h3>
             <form id="productForm">
                 <div class="form-group">
                     <label for="sku">SKU *</label>
@@ -129,7 +129,8 @@
                     <div class="error" id="imageUrlError"></div>
                 </div>
 
-                <button type="submit" class="btn">Agregar Producto</button>
+                <button type="submit" class="btn" id="submitButton">Agregar Producto</button>
+                <button type="button" class="btn" id="cancelEditButton" hidden>Cancelar edición</button>
             </form>
             <div id="formMessage"></div>
         </div>
