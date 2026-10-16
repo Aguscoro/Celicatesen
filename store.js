@@ -35,16 +35,29 @@ document.addEventListener('DOMContentLoaded', async () => {
       image.alt = product.name;
       image.loading = 'lazy';
 
+      const info = document.createElement('div');
+      info.className = 'producto-info';
+
+      const text = document.createElement('div');
       const name = document.createElement('h3');
       name.textContent = product.name;
-
       const price = document.createElement('p');
       price.className = 'producto-precio';
       price.textContent = formatPrice(product.price);
+      text.append(name, price);
 
-      card.append(image, name, price);
+      // No orders on the site: each product opens a chat that already
+      // names it.
+      const ask = document.createElement('a');
+      ask.className = 'producto-consultar';
+      ask.dataset.wa = `¡Hola! Quería consultar por: ${product.name}.`;
+      ask.innerHTML = '<span class="contacto-icono"></span>Consultar';
+
+      info.append(text, ask);
+      card.append(image, info);
       gallery.appendChild(card);
     });
+    applyContactLinks(gallery);
   } catch (error) {
     console.error('No se pudo cargar el catálogo', error);
     gallery.innerHTML = '<p class="galeria-aviso">No pudimos cargar el catálogo en este momento.</p>';

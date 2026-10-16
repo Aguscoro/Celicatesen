@@ -4,60 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Celicatesen</title>
-    <meta name="description" content="Pastelería 100% libre de gluten. Tortas, brownies y boxes dulces hechos con amor.">
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Pastelería 100% libre de gluten. Tortas, brownies, alfajores y boxes dulces hechos a mano.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tienda.css">
 </head>
 <body>
-    <header>
-        <div class="barra">
-            <div class="center">
-                <img class="Celi-logo" src="imagenes/Logo.png" alt="logo-Celi">
-            </div>
-            <div class="low-center">
-                <a href="/index.html">
-                    <h2>Inicio</h2>
-                </a>
-                <a href="admin.html">
-                    <h2>Productos</h2>
-                </a>
-                <a href="https://www.instagram.com/celicatesen_/" target="_blank" rel="noopener noreferrer">
-                    <h2>Instagram</h2>
-                </a>
-            </div>
-        </div>
+    <header class="cabecera">
+        <nav class="contenedor menu">
+            <a href="#inicio"><img class="menu-logo" src="imagenes/Logo.png" alt="Celicatesen"></a>
+            <ul class="menu-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="https://www.instagram.com/celicatesen_/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            </ul>
+            <a class="btn btn-tinta" data-wa="¡Hola! Quería hacer una consulta."><span class="contacto-icono"></span>Escribinos</a>
+        </nav>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Bienvenido a Celicatesen</h1>
-            <p>Donde cada torta cuenta una historia. Descubrí tu nueva torta favorita hecha con amor</p>
-        </div>
-    </section>
+    <main class="contenedor">
+        <section class="hero" id="inicio">
+            <div class="hero-texto">
+                <div class="chips">
+                    <span class="chip">Sin gluten</span>
+                    <span class="chip">Hecho a mano</span>
+                    <span class="chip">Plant based ✨ pronto</span>
+                </div>
+                <h1>Todo lo dulce, sin límites</h1>
+                <p>Tortas, brownies, alfajores y más 100% libres de gluten, hechos a mano y con amor.</p>
+                <div class="hero-acciones">
+                    <a class="btn btn-tinta" href="#productos">Ver productos</a>
+                    <a class="btn btn-blanco" data-wa="¡Hola! Quería hacer un pedido."><span class="contacto-icono"></span>Pedí por <span class="contacto-canal"></span></a>
+                </div>
+            </div>
+            <div class="hero-foto">
+                <img src="imagenes/Torta%20bombon.jpg" alt="Torta bombón de Celicatesen">
+            </div>
+        </section>
 
-    <section class="recomendaciones">
-        <h2>Nuestras recomendaciones</h2>
-        <!-- Se completa desde la API en store.js -->
-        <div class="galeria" id="galeria">
-            <p class="galeria-aviso">Cargando el catálogo…</p>
+        <div class="valores">
+            <div class="valor">
+                <span class="valor-icono valor-rosa" aria-hidden="true">🌾</span>
+                <div><h3>Sin gluten</h3><p>Elaboración 100% libre de gluten.</p></div>
+            </div>
+            <div class="valor">
+                <span class="valor-icono valor-lavanda" aria-hidden="true">🤍</span>
+                <div><h3>Hecho a mano</h3><p>Pastelería artesanal, cuidando cada detalle.</p></div>
+            </div>
+            <div class="valor">
+                <span class="valor-icono valor-menta" aria-hidden="true">🌱</span>
+                <div><h3>Plant based</h3><p>Una línea nueva, muy pronto.</p></div>
+            </div>
         </div>
-    </section>
 
-    <section class="sobre-nosotros">
-        <div class="nosotros">
-            <h2>Sobre nosotros</h2>
-            <p>En Celicatesen creemos que todos merecen disfrutar de lo dulce sin límites. Por eso, elaboramos pastelería 100% libre de gluten, cuidando cada detalle para garantizar sabor y seguridad. Próximamente, sumaremos una línea plant based, ideal para quienes eligen una alimentación consciente, sin perder la magia de un buen postre.</p>
-        </div>
-    </section>
+        <section class="catalogo" id="productos">
+            <h2>Nuestros productos</h2>
+            <p class="catalogo-sub">Elegí lo que más te guste y consultanos por <span class="contacto-canal"></span>.</p>
+            <!-- Se completa desde la API en store.js -->
+            <div class="galeria" id="galeria">
+                <p class="galeria-aviso">Cargando el catálogo…</p>
+            </div>
+        </section>
 
-    <footer>
-        <p>&copy; 2025 Celicatesen. Todos los derechos reservados.</p>
+        <section class="como" id="como-pedir">
+            <h2>¿Cómo pedir?</h2>
+            <div class="pasos">
+                <div class="paso"><b>1</b><h3>Elegí</h3><p>Mirá el catálogo y elegí lo que más te tiente.</p></div>
+                <div class="paso"><b>2</b><h3>Escribinos</h3><p>Mandanos un mensaje por <span class="contacto-canal"></span> con tu pedido y la fecha.</p></div>
+                <div class="paso"><b>3</b><h3>Coordinamos</h3><p>Te confirmamos precio, fecha y forma de entrega.</p></div>
+            </div>
+            <a class="btn btn-tinta" data-wa="¡Hola! Quería hacer un pedido."><span class="contacto-icono"></span>Escribinos por <span class="contacto-canal"></span></a>
+        </section>
+
+        <section class="nosotros" id="nosotros">
+            <img src="imagenes/Logo.png" alt="">
+            <div>
+                <h2>Sobre nosotros</h2>
+                <p>En Celicatesen creemos que todos merecen disfrutar de lo dulce sin límites. Por eso, elaboramos pastelería 100% libre de gluten, cuidando cada detalle para garantizar sabor y seguridad. Próximamente, sumaremos una línea plant based, ideal para quienes eligen una alimentación consciente, sin perder la magia de un buen postre.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <p>&copy; 2025 Celicatesen · Pedidos por <span class="contacto-canal"></span> · <a href="https://www.instagram.com/celicatesen_/" target="_blank" rel="noopener noreferrer">@celicatesen_</a></p>
     </footer>
 
-    <a class="imagen-wpp" href="https://www.instagram.com/direct/t/17845624232990127/" target="_blank" rel="noopener noreferrer">
-        <img class="logo-wpp" src="imagenes/Instagram.png" alt="Escribinos por Instagram">
-    </a>
+    <a class="contacto-flotante" data-wa="¡Hola! Quería hacer una consulta." aria-label="Escribinos"><span class="contacto-icono"></span></a>
 
     <script src="config.js"></script>
+    <script src="wa.js"></script>
     <script src="store.js"></script>
 </body>
 </html>
