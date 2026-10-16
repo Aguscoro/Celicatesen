@@ -1,5 +1,9 @@
 // Fills the storefront gallery from the API. If the call fails the section
 // says so instead of showing an empty grid with no explanation.
+
+// Description backend/seed.js gives new products. It is a note for the
+// admin, not copy for customers, so the storefront treats it as empty.
+const SEED_PLACEHOLDER = 'Descripción pendiente: editala desde el panel.';
 document.addEventListener('DOMContentLoaded', async () => {
   const gallery = document.getElementById('galeria');
   if (!gallery) return;
@@ -30,10 +34,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       const card = document.createElement('div');
       card.className = 'producto';
 
+      const photo = document.createElement('div');
+      photo.className = 'producto-foto';
+
       const image = document.createElement('img');
       image.src = product.imageUrl || 'imagenes/Logo.png';
       image.alt = product.name;
       image.loading = 'lazy';
+      photo.append(image);
+
+      const description = (product.description || '').trim();
+      if (description && description !== SEED_PLACEHOLDER) {
+        const overlay = document.createElement('div');
+        overlay.className = 'producto-descripcion';
+        const overlayText = document.createElement('p');
+        overlayText.textContent = description;
+        overlay.append(overlayText);
+        photo.append(overlay);
+
+        // Hover shows it on desktop (CSS). Touch screens have no hover, so a
+        // tap on the photo toggles it, and Tab reaches it from the keyboard.
+        photo.tabIndex = 0;
+        photo.setAttribute('aria-label', `${product.name}: ${description}`);
+        photo.addEventListener('click', () => photo.classList.toggle('abierta'));
+        card.addEventListener('mouseleave', () => photo.classList.remove('abierta'));
+      }
 
       const info = document.createElement('div');
       info.className = 'producto-info';
@@ -54,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ask.innerHTML = '<span class="contacto-icono"></span>Consultar';
 
       info.append(text, ask);
-      card.append(image, info);
+      card.append(photo, info);
       gallery.appendChild(card);
     });
     applyContactLinks(gallery);

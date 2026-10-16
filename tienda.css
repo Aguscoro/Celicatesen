@@ -288,6 +288,59 @@ h1, h2, h3 {
     border-radius: 20px;
 }
 
+/* Descripción sobre la foto: aparece al pasar el mouse, al tocar la foto en
+   celular (clase .abierta, desde store.js) o al llegar con Tab. El hover va
+   dentro de (hover: hover) porque en pantallas táctiles queda "pegado" y no
+   dejaría volver a la foto. */
+.producto-foto {
+    position: relative;
+}
+
+.producto-descripcion {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: rgba(47, 47, 88, 0.88);
+    color: #fff;
+    font-size: 0.95rem;
+    text-align: center;
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+/* margin: auto centra el texto si es corto y, a diferencia de align-items,
+   no le corta el principio cuando es largo y hay que scrollear. */
+.producto-descripcion p {
+    margin: auto;
+}
+
+@media (hover: hover) {
+    .producto:hover .producto-descripcion {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.producto-foto.abierta .producto-descripcion,
+.producto-foto:focus-visible .producto-descripcion {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.producto-foto[tabindex] {
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.producto-foto:focus-visible {
+    outline: 3px solid var(--tinta);
+    outline-offset: 3px;
+}
+
 /* El botón va siempre debajo del precio: al costado se acomodaba o no según
    el largo del nombre, y las tarjetas quedaban distintas entre sí. */
 .producto-info {
