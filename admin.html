@@ -5,140 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración - Celicatesen</title>
     <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="barra">
-            <div class="center">
-                <img class="Celi-logo" src="imagenes/Logo.png" alt="logo-Celi">
-            </div>
-            <div class="low-center">
-                <a href="/index.html">
-                    <h2>Inicio</h2>
-                </a>
-                <a href="admin.html">
-                    <h2>Productos</h2>
-                </a>
-                <a href="https://www.instagram.com/celicatesen_/" target="_blank" rel="noopener noreferrer">
-                    <h2>Instagram</h2>
-                </a>
-            </div>
-        </div>
+    <header class="cabecera">
+        <nav class="contenedor menu">
+            <a href="/"><img class="menu-logo" src="imagenes/Logo.png" alt="Celicatesen"></a>
+            <span class="menu-titulo">Panel de administración</span>
+            <a class="btn btn-claro" href="/">Ver tienda →</a>
+        </nav>
     </header>
 
-    <!-- Sin sesión: lo único visible es el login. -->
-    <div class="admin-container" id="loginSection" hidden>
-        <div class="admin-header">
-            <h1>Administración</h1>
-            <p>Entrá con tu cuenta para gestionar el catálogo</p>
-        </div>
+    <main class="contenedor">
+        <!-- Sin sesión: lo único visible es el login. -->
+        <section class="login" id="loginSection" hidden>
+            <div class="tarjeta">
+                <img class="login-logo" src="imagenes/Logo.png" alt="">
+                <h1>Administración</h1>
+                <p class="bajada">Entrá con tu cuenta para gestionar el catálogo.</p>
 
-        <div class="form-section">
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" autocomplete="username" required>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" autocomplete="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" name="password" autocomplete="current-password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-ancho">Entrar</button>
+                </form>
+                <div id="loginMessage"></div>
+            </div>
+        </section>
+
+        <!-- Con sesión: el panel. -->
+        <section class="panel" id="adminSection" hidden>
+            <div class="panel-cabecera">
+                <div>
+                    <h1>Productos</h1>
+                    <p class="bajada">Lo que cargues acá aparece en la tienda al instante.</p>
                 </div>
+                <button type="button" class="btn btn-claro" id="logoutButton">Cerrar sesión</button>
+            </div>
 
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <div class="tarjeta">
+                <h2>Lista de productos</h2>
+                <div class="table-container">
+                    <table class="products-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Marca</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <button type="submit" class="btn">Entrar</button>
-            </form>
-            <div id="loginMessage"></div>
-        </div>
-    </div>
+            <div class="tarjeta">
+                <h2 id="formTitle">Agregar Nuevo Producto</h2>
+                <form id="productForm" class="form-grilla">
+                    <div class="form-group">
+                        <label for="sku">SKU *</label>
+                        <input type="text" id="sku" name="sku" placeholder="CELI-004" required>
+                        <div class="error" id="skuError"></div>
+                    </div>
 
-    <!-- Con sesión: el panel. -->
-    <div class="admin-container" id="adminSection" hidden>
-        <div class="admin-header">
-            <h1>Administración de Productos</h1>
-            <p>Gestiona el catálogo de productos</p>
-            <button type="button" class="btn" id="logoutButton">Cerrar sesión</button>
-        </div>
+                    <div class="form-group">
+                        <label for="name">Nombre del Producto *</label>
+                        <input type="text" id="name" name="name" required>
+                        <div class="error" id="nameError"></div>
+                    </div>
 
-        <div class="table-container">
-            <h3>Lista de Productos</h3>
-            <table class="products-table" id="productsTable">
-                <thead>
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Marca</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="productsTableBody">
-                </tbody>
-            </table>
-        </div>
+                    <div class="form-group">
+                        <label for="brand">Marca *</label>
+                        <input type="text" id="brand" name="brand" value="Celicatesen" required>
+                        <div class="error" id="brandError"></div>
+                    </div>
 
-        <div class="form-section">
-            <h3 id="formTitle">Agregar Nuevo Producto</h3>
-            <form id="productForm">
-                <div class="form-group">
-                    <label for="sku">SKU *</label>
-                    <input type="text" id="sku" name="sku" placeholder="CELI-004" required>
-                    <div class="error" id="skuError"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="category">Categoría *</label>
+                        <input type="text" id="category" name="category" value="general" required>
+                        <div class="error" id="categoryError"></div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="name">Nombre del Producto *</label>
-                    <input type="text" id="name" name="name" required>
-                    <div class="error" id="nameError"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="price">Precio *</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" value="0" required>
+                        <div class="error" id="priceError"></div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="brand">Marca *</label>
-                    <input type="text" id="brand" name="brand" value="Celicatesen" required>
-                    <div class="error" id="brandError"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="stock">Stock *</label>
+                        <input type="number" id="stock" name="stock" min="0" value="0" required>
+                        <div class="error" id="stockError"></div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="description">Descripción *</label>
-                    <textarea id="description" name="description" rows="3" required></textarea>
-                    <div class="error" id="descriptionError"></div>
-                </div>
+                    <div class="form-group form-ancho">
+                        <label for="description">Descripción *</label>
+                        <textarea id="description" name="description" rows="3" required></textarea>
+                        <div class="error" id="descriptionError"></div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="price">Precio *</label>
-                    <input type="number" id="price" name="price" step="0.01" min="0" value="0" required>
-                    <div class="error" id="priceError"></div>
-                </div>
+                    <div class="form-group form-ancho">
+                        <label for="imageUrl">Imagen *</label>
+                        <input type="text" id="imageUrl" name="imageUrl" placeholder="imagenes/Brownies.jpg o https://…" required>
+                        <div class="error" id="imageUrlError"></div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="stock">Stock *</label>
-                    <input type="number" id="stock" name="stock" min="0" value="0" required>
-                    <div class="error" id="stockError"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="category">Categoría *</label>
-                    <input type="text" id="category" name="category" value="general" required>
-                    <div class="error" id="categoryError"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="imageUrl">Imagen *</label>
-                    <input type="text" id="imageUrl" name="imageUrl" placeholder="imagenes/Brownies.jpg o https://…" required>
-                    <div class="error" id="imageUrlError"></div>
-                </div>
-
-                <button type="submit" class="btn" id="submitButton">Agregar Producto</button>
-                <button type="button" class="btn" id="cancelEditButton" hidden>Cancelar edición</button>
-            </form>
-            <div id="formMessage"></div>
-        </div>
-    </div>
-
-    <a class="imagen-wpp" href="https://www.instagram.com/direct/t/17845624232990127/" target="_blank" rel="noopener noreferrer">
-        <img class="logo-wpp" src="imagenes/Instagram.png" alt="Escribinos por Instagram">
-    </a>
+                    <div class="form-acciones form-ancho">
+                        <button type="submit" class="btn" id="submitButton">Agregar Producto</button>
+                        <button type="button" class="btn btn-claro" id="cancelEditButton" hidden>Cancelar edición</button>
+                    </div>
+                </form>
+                <div id="formMessage"></div>
+            </div>
+        </section>
+    </main>
 
     <script src="config.js"></script>
     <script src="admin.js"></script>

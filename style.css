@@ -1,108 +1,214 @@
+/* Panel de administración. Misma estética que la vidriera (tienda.css). */
+
+:root {
+    --lavanda: #a9a9c4;
+    --lavanda-100: #ececf4;
+    --lavanda-50: #f6f6fb;
+    --tinta: #2f2f58;
+    --peligro: #c2414f;
+    --peligro-50: #fbe9eb;
+    --exito: #2f7d55;
+    --exito-50: #e3f3ea;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
+/* El panel muestra y oculta secciones con el atributo hidden; sin esto,
+   cualquier regla de display le ganaría y quedarían visibles. */
+[hidden] {
+    display: none !important;
+}
+
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #ffffff;
-    color: #2f2f58;;
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--lavanda-50);
+    color: var(--tinta);
     line-height: 1.6;
 }
-.barra {
-    background-color: #828297;
-    padding: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #696979;
-}
-.Celi-logo {
-    width: 80px;
-    height: 60px;
-}
-  .low-center {
-    display: flex;
-    gap: 1rem;
-    font-size: 12px;
-}
-  .low-center a {
+
+a {
+    color: inherit;
     text-decoration: none;
-    color: #2f2f58;
 }
 
-.admin-container {
-    max-width: 1200px;
+h1, h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.contenedor {
+    max-width: 1120px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px;
 }
 
-.admin-header {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #2f2f58;
-}
-
-.form-section {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    border: 1px solid #dee2e6;
-}
-
-.form-section h3 {
-    color: #2f2f58;
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #2f2f58;
-}
-
-.form-group input, .form-group textarea, .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-    outline: none;
-    border-color: #828297;
-    box-shadow: 0 0 5px rgba(130, 130, 151, 0.3);
-}
+/* Botones ----------------------------------------------------------------- */
 
 .btn {
-    background-color: #828297;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 999px;
+    background-color: var(--tinta);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .btn:hover {
-    background-color: #696979;
+    transform: translateY(-1px);
+    background-color: #1f1f40;
+}
+
+.btn:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--lavanda);
+    outline-offset: 2px;
+}
+
+.btn-claro {
+    background-color: var(--lavanda-100);
+    color: var(--tinta);
+}
+
+.btn-claro:hover {
+    background-color: var(--lavanda);
 }
 
 .btn-danger {
-    background-color: #dc3545;
+    background-color: var(--peligro-50);
+    color: var(--peligro);
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color: var(--peligro);
+    color: #fff;
 }
+
+.btn-ancho {
+    width: 100%;
+}
+
+/* Menú -------------------------------------------------------------------- */
+
+.cabecera {
+    padding: 16px 0;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background-color: #fff;
+    border-radius: 999px;
+    padding: 8px 10px 8px 18px;
+    box-shadow: 0 6px 24px rgba(47, 47, 88, 0.08);
+}
+
+.menu-logo {
+    display: block;
+    height: 44px;
+}
+
+.menu-titulo {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+/* Tarjetas ---------------------------------------------------------------- */
+
+.tarjeta {
+    background-color: #fff;
+    border-radius: 28px;
+    padding: 32px;
+    margin-bottom: 24px;
+}
+
+.tarjeta h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.bajada {
+    opacity: 0.7;
+}
+
+/* Login ------------------------------------------------------------------- */
+
+.login {
+    display: grid;
+    place-items: center;
+    padding: 40px 0 80px;
+}
+
+.login .tarjeta {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.login-logo {
+    width: 110px;
+    margin-bottom: 12px;
+}
+
+.login h1 {
+    font-size: 2rem;
+}
+
+.login .bajada {
+    margin-bottom: 24px;
+}
+
+.login form {
+    text-align: left;
+}
+
+/* Panel ------------------------------------------------------------------- */
+
+.panel {
+    padding: 12px 0 60px;
+}
+
+.panel-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 36px 40px;
+    border-radius: 28px;
+    background-color: var(--lavanda);
+    color: #fff;
+}
+
+.panel-cabecera h1 {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.panel-cabecera .bajada {
+    opacity: 0.95;
+}
+
+.panel-cabecera .btn-claro {
+    background-color: #fff;
+}
+
+/* Tabla ------------------------------------------------------------------- */
 
 .table-container {
     overflow-x: auto;
@@ -111,124 +217,149 @@ body {
 .products-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .products-table th {
-    background-color: #828297;
-    color: white;
-    padding: 15px;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--lavanda-100);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     text-align: left;
-    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 0.6;
 }
 
 .products-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--lavanda-100);
+    vertical-align: middle;
 }
 
-.products-table tr:hover {
-    background-color: #f8f9fa;
+.products-table tbody tr:hover {
+    background-color: var(--lavanda-50);
+}
+
+.products-table td:last-child {
+    white-space: nowrap;
+}
+
+/* Editar y Eliminar conviven en la misma celda. */
+.products-table td .btn {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+}
+
+.products-table td .btn + .btn {
+    margin-left: 6px;
 }
 
 .product-image {
-    width: 80px;
-    height: 60px;
+    display: block;
+    width: 64px;
+    height: 64px;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 14px;
 }
+
+/* Formulario -------------------------------------------------------------- */
+
+.form-grilla {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 20px;
+}
+
+.form-ancho {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--lavanda-100);
+    border-radius: 14px;
+    background-color: var(--lavanda-50);
+    color: var(--tinta);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--lavanda);
+    background-color: #fff;
+}
+
+.form-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+/* Mensajes ---------------------------------------------------------------- */
 
 .error {
-    color: #dc3545;
-    font-size: 12px;
-    margin-top: 5px;
+    color: var(--peligro);
+    font-size: 0.82rem;
+    margin-top: 4px;
 }
 
-.success {
-    color: #28a745;
-    font-size: 14px;
-    margin-top: 10px;
+/* Los avisos de login y de guardado van en una caja; los errores por campo
+   quedan como texto suelto debajo de cada input. */
+#loginMessage .error,
+#formMessage .error,
+#formMessage .success {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    font-weight: 600;
 }
 
-.back-link {
-    display: inline-block;
-    margin-bottom: 20px;
-    color: #828297;
-    text-decoration: none;
-    font-weight: bold;
+#loginMessage .error,
+#formMessage .error {
+    background-color: var(--peligro-50);
 }
 
-.back-link:hover {
-    color: #696979;
-}
-.imagen-wpp {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    cursor: pointer;
-}
-.logo-wpp {
-    width: 60px;
-    filter: drop-shadow(5px 5px 5px black);
-    opacity: 50%;
-    &:hover{
-        cursor: pointer;
-        transform: scale(1.1);
-        transform: all .4s ease-in-out;
-        opacity: 100%;
-
-    }
-}
-@media screen and (max-width: 768px) {
-    .barra {
-        padding: 10px;
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .Celi-logo {
-        width: 60px;
-        height: 45px;
-    }
-    
-    .low-center {
-        gap: 0.5rem;
-        font-size: 11px;
-    }
-    
-    .low-center h2 {
-        font-size: 14px;
-    }
-    
-    .admin-container {
-        padding: 15px;
-    }
-    
-    .form-section {
-        padding: 15px;
-    }
-    
-    .products-table th,
-    .products-table td {
-        padding: 10px 8px;
-        font-size: 12px;
-    }
-    
-    .product-image {
-        width: 60px;
-        height: 45px;
-    }
+#formMessage .success {
+    background-color: var(--exito-50);
+    color: var(--exito);
 }
 
-/* Acciones del panel ------------------------------------------------------ */
+/* Celular ----------------------------------------------------------------- */
 
-/* Editar y Eliminar conviven en la misma celda, y el formulario suma el
-   botón de cancelar al lado del de guardar. */
-.products-table td .btn + .btn,
-#productForm .btn + .btn {
-    margin-left: 8px;
+@media (max-width: 700px) {
+    .menu-titulo {
+        display: none;
+    }
+
+    .tarjeta {
+        padding: 22px 18px;
+    }
+
+    .panel-cabecera {
+        padding: 28px 22px;
+    }
+
+    .form-grilla {
+        grid-template-columns: 1fr;
+    }
 }
